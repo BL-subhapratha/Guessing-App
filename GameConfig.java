@@ -37,6 +37,22 @@ public class GameConfig {
         System.out.println("==================================");
     }
 
+    public int getTargetNumber() {
+        return targetNumber;
+    }
+
+    public int getRemainingAttempts() {
+        return remainingAttempts;
+    }
+
+    public void decrementAttempts() {
+        remainingAttempts--;
+    }
+
+    public boolean hasAttemptsLeft() {
+        return remainingAttempts > 0;
+    }
+
     public static void main(String[] args) {
         new GameConfig();
     }
