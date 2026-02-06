@@ -5,30 +5,38 @@ public class GuessingGame {
     private GameConfig config;
     private Scanner scanner;
     private HintService hintService;
+    private ValidationService validationService;
 
     public GuessingGame() {
         config = new GameConfig();
         hintService = new HintService();
+        validationService = new ValidationService();
         scanner = new Scanner(System.in);
         startGameLoop();
     }
 
+     private void logInvalidAttempt(String input) {
+        System.out.println("[LOG] Invalid input received: \"" + input + "\"");
+    }
+    
     private void startGameLoop() {
         while (config.hasAttemptsLeft()) {
             System.out.print("Enter your guess: ");
 
-            if (!scanner.hasNextInt()) {
-                System.out.println("Invalid input. Please enter a number.");
-                scanner.next(); // clear invalid input
-                continue;
-            }
+            String input = scanner.nextLine();
 
-            int userGuess = scanner.nextInt();
-            processGuess(userGuess);
+            try {
+                int userGuess = validationService.validateGuess(input);
+                processGuess(userGuess);
 
-            if (userGuess == config.getTargetNumber()) {
-                System.out.println("Congratulations! You guessed correctly!");
-                return;
+                if (userGuess == config.getTargetNumber()) {
+                    System.out.println("Congratulations! You guessed correctly!");
+                    return;
+                }
+
+            } catch (InvalidGuessException e) {
+                logInvalidAttempt(input);
+                System.out.println("Error: " + e.getMessage());
             }
         }
 
