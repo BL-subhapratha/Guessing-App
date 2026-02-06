@@ -8,19 +8,48 @@ public class GuessingGame {
     private ValidationService validationService;
     private StorageService storageService;
     private String playerName;
+    private boolean playAgain;
+
+    private void askForRestart() {
+        System.out.print("Do you want to play again? (Y/N): ");
+        String choice = scanner.nextLine().trim().toUpperCase();
+
+        if (!choice.equals("Y")) {
+            playAgain = false;
+        } else {
+            System.out.println("Restarting game...");
+        }
+    }
+
+    private void shutdown() {
+        System.out.println("==================================");
+        System.out.println("Thank you for playing!");
+        System.out.println("Final summary saved successfully.");
+        System.out.println("Goodbye!");
+        System.out.println("==================================");
+
+        scanner.close();
+    }
 
     public GuessingGame() {
-        config = new GameConfig();
-        hintService = new HintService();
-        validationService = new ValidationService();
-        storageService = new StorageService();
         scanner = new Scanner(System.in);
+        playAgain = true;
 
         System.out.print("Enter your name: ");
         playerName = scanner.nextLine();
 
-        displayPreviousResults();
-        startGameLoop();
+        storageService = new StorageService();
+        hintService = new HintService();
+        validationService = new ValidationService();
+
+        while (playAgain) {
+            config = new GameConfig();   // RESET game state
+            displayPreviousResults();
+            startGameLoop();
+            askForRestart();
+        }
+
+        shutdown();
     }
 
     private void displayPreviousResults() {
