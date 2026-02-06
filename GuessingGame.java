@@ -4,9 +4,11 @@ public class GuessingGame {
 
     private GameConfig config;
     private Scanner scanner;
+    private HintService hintService;
 
     public GuessingGame() {
         config = new GameConfig();
+        hintService = new HintService();
         scanner = new Scanner(System.in);
         startGameLoop();
     }
@@ -35,16 +37,28 @@ public class GuessingGame {
     }
 
     private void processGuess(int guess) {
-        config.decrementAttempts();
-
         if (guess > config.getTargetNumber()) {
+            config.decrementAttempts();
             System.out.println("Too High!");
-        } else if (guess < config.getTargetNumber()) {
+            provideHint();
+        } 
+        else if (guess < config.getTargetNumber()) {
+            config.decrementAttempts();
             System.out.println("Too Low!");
+            provideHint();
         }
 
         System.out.println("Remaining attempts: " + config.getRemainingAttempts());
         System.out.println("----------------------------------");
+    }
+
+    private void provideHint() {
+        if (config.hasHintsLeft()) {
+            config.decrementHints();
+            int hintCount = config.getUsedHints();
+            String hint = hintService.generateHint(config.getTargetNumber(), hintCount);
+            System.out.println(hint);
+        }
     }
 
     public static void main(String[] args) {

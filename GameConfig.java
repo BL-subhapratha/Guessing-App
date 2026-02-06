@@ -53,7 +53,15 @@ public class GameConfig {
         return remainingAttempts > 0;
     }
 
-    public static void main(String[] args) {
-        new GameConfig();
+    public boolean hasHintsLeft() {
+        return remainingHints > 0;
+    }
+
+    public void decrementHints() {
+        remainingHints--;
+    }
+
+    public int getUsedHints() {
+        return MAX_HINTS - remainingHints;
     }
 }
